@@ -1,15 +1,21 @@
 package direction.com.vehiclespro.utility;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class Validations {
 
     public static boolean isValidVehicleNo(String txt) {
+        Pattern pattern;
+        Matcher matcher;
 
-        //if(txt.matches("")) return true;
+        final String PASSWORD_PATTERN = "^[a-zA-Z]{2}[ ]{0,1}[0-9]{2}[ ]{0,1}[a-zA-Z]{1,2}[ ]{0,1}[0-9]{1,4}$";
 
-        if(txt.matches("^[A-Z]{2}[ -]{0,1}[0-9]{2}[ -]{0,1}[A-Z]{1,2}[ -]{0,1}[0-9]{1,4}$\n"))
-            return true;
+        pattern = Pattern.compile(PASSWORD_PATTERN);
+        matcher = pattern.matcher(txt);
 
-        else return false;
+        return matcher.matches();
+
     }
 
 

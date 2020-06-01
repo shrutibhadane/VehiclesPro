@@ -22,6 +22,8 @@ import java.util.List;
 
 import direction.com.vehiclespro.R;
 import direction.com.vehiclespro.database.DatabaseHelper;
+import direction.com.vehiclespro.utility.Utility;
+import direction.com.vehiclespro.utility.Validations;
 import direction.com.vehiclespro.view.history.HistoryActivity;
 
 public class ProfileActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
@@ -75,7 +77,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         categories.add("Select Fuel Type");
         categories.add("Petrol");
         categories.add("Diesel");
-        categories.add("Kerosene");
 
         // Creating adapter for spinner
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, categories);
@@ -140,30 +141,32 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
             case R.id.btn_save_profile:
                 ableDisableSave();
-                updatedVehicleNo = etVehicleNo.getText().toString();
-                updatedMake = etMake.getText().toString();
-                updatedModel = etModel.getText().toString();
-                updatedVariant = etVariant.getText().toString();
 
-                tvVehicleNo.setText(updatedVehicleNo);
-                tvMake.setText(updatedMake);
-                tvModel.setText(updatedModel);
-                tvVariant.setText(updatedVariant);
-                tvFuelType.setText(updatedFuelType);
-                etVehicleNo.setText(updatedVehicleNo);
-                etMake.setText(updatedMake);
-                etModel.setText(updatedModel);
-                etVariant.setText(updatedVariant);
+                if (validateDetails()) {
+                    updatedVehicleNo = etVehicleNo.getText().toString();
+                    updatedMake = etMake.getText().toString();
+                    updatedModel = etModel.getText().toString();
+                    updatedVariant = etVariant.getText().toString();
 
-                @SuppressLint("SimpleDateFormat") DateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy HH:mm a");
-                Date date = new Date();
-                dateTime = dateFormat.format(date);
+                    tvVehicleNo.setText(updatedVehicleNo);
+                    tvMake.setText(updatedMake);
+                    tvModel.setText(updatedModel);
+                    tvVariant.setText(updatedVariant);
+                    tvFuelType.setText(updatedFuelType);
+                    etVehicleNo.setText(updatedVehicleNo);
+                    etMake.setText(updatedMake);
+                    etModel.setText(updatedModel);
+                    etVariant.setText(updatedVariant);
 
-                // Insert data into database
-                database.updateValue(dateTime, name, updatedVehicleNo, updatedMake,
-                        updatedModel, updatedVariant,
-                        updatedFuelType );
+                    @SuppressLint("SimpleDateFormat") DateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy HH:mm a");
+                    Date date = new Date();
+                    dateTime = dateFormat.format(date);
 
+                    // Insert data into database
+                    database.updateValue(dateTime, name, updatedVehicleNo, updatedMake,
+                            updatedModel, updatedVariant,
+                            updatedFuelType);
+                }
                 break;
 
             case R.id.btn_history_profile:
@@ -219,5 +222,27 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+    /*
+     * validate all necessary fields
+     * */
+    private boolean validateDetails() {
+        if (etVehicleNo.getText().toString().equals("")) {
+            Utility.errorSnackBar(findViewById(R.id.profileActivity), getString(R.string.enter_vehicle_number));
+        } else if (!Validations.isValidVehicleNo(etVehicleNo.getText().toString())) {
+            Utility.errorSnackBar(findViewById(R.id.profileActivity), getString(R.string.enter_valid_vehicle_number));
+        } else if (etMake.getText().toString().equals("")) {
+            Utility.errorSnackBar(findViewById(R.id.profileActivity), getString(R.string.enter_make));
+        } else if (etModel.getText().toString().equals("")) {
+            Utility.errorSnackBar(findViewById(R.id.profileActivity), getString(R.string.enter_model));
+        } else if (etVariant.getText().toString().equals("")) {
+            Utility.errorSnackBar(findViewById(R.id.profileActivity), getString(R.string.enter_variant));
+        } else if (!updatedFuelType.toString().equals("Select Fuel Type")) {
+            return true;
+        } else {
+            Utility.errorSnackBar(findViewById(R.id.profileActivity), getString(R.string.enter_fuel_type));
+        }
+        return false;
     }
 }

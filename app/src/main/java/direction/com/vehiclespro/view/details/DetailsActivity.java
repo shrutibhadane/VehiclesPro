@@ -88,7 +88,6 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
         categories.add("Select Fuel Type");
         categories.add("Petrol");
         categories.add("Diesel");
-        categories.add("Kerosene");
 
         // Creating adapter for spinner
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, categories);
@@ -298,7 +297,7 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
     private boolean validateDetails() {
         if (etVehicleNo.getText().toString().equals("")) {
             Utility.errorSnackBar(findViewById(R.id.detailsActivity), getString(R.string.enter_vehicle_number));
-        } else if (Validations.isValidVehicleNo(etVehicleNo.getText().toString())) {
+        } else if (!Validations.isValidVehicleNo(etVehicleNo.getText().toString())) {
             Utility.errorSnackBar(findViewById(R.id.detailsActivity), getString(R.string.enter_valid_vehicle_number));
         } else if (etMake.getText().toString().equals("")) {
             Utility.errorSnackBar(findViewById(R.id.detailsActivity), getString(R.string.enter_make));
